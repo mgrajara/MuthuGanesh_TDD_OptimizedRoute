@@ -48,17 +48,13 @@ public class OptimizedRoute {
                 System.out.println(returnMap.get(source.name+target));
 
                 // Reset the values to re-calculate for other shortest path
-                Set<String> keySet = gateMap.keySet();
-                for (String key : keySet) {
-                    Gate g = gateMap.get(key);
-                    g.reset();
-                }
+                resetGateCost();
             }  
         }
         return returnMap;
     }
     
-    private static void findShortPath(Gate gate){
+    public static void findShortPath(Gate gate){
         gate.minTravel=0;
         PriorityQueue<Gate> queue = new PriorityQueue<Gate>();
         queue.add(gate);
@@ -208,6 +204,17 @@ public class OptimizedRoute {
         gateMap = null;
         depMap = null;
         bagMap = null;
+    }
+    
+    public static void resetGateCost(){
+        if(gateMap==null){
+            return;
+        }
+        Set<String> keySet = gateMap.keySet();
+        for (String key : keySet) {
+            Gate g = gateMap.get(key);
+            g.reset();
+        }
     }
     
     public static void main(String args[]){
