@@ -19,7 +19,15 @@ public class OptimizedRouteTest {
     @Before
     public void setup(){
         OptimizedRoute.reset();
+        OptimizedRoute.resetGateCost();
     }
+    
+    @After
+    public void tearDown(){
+        OptimizedRoute.reset();
+        OptimizedRoute.resetGateCost();
+    }
+    
     @Test
     public void fromGateNullTest(){
         System.out.println("fromGateNullTest:::");
@@ -169,6 +177,23 @@ public class OptimizedRouteTest {
     }  
 
     @Test
+    public void finddirectPathDirectlyTest(){
+        System.out.println("finddirectPathDirectlyTest:::");
+        OptimizedRoute.insertGateInfo("A", "B", 5);
+        OptimizedRoute.insertFlightDeparture("U01", "B", "MIA", "08:00");
+        OptimizedRoute.insertBagList("0001", "A", "U01");
+        Gate from = OptimizedRoute.getGateMap().get("A");
+        Gate to = OptimizedRoute.getGateMap().get("B");
+        OptimizedRoute.findShortPath(from);
+        String path = OptimizedRoute.printPath(to);
+        Assert.assertEquals("Wrong path", "A B", path);
+        System.out.println("Test Passed. Computed path is as expected"); 
+
+        Assert.assertEquals("Wrong cost", "5.0", ((Double)to.minTravel).toString());
+        System.out.println("Test Passed. Computed cost is as expected");  
+    }   
+
+    @Test
     public void finddirectPathTest(){
         System.out.println("finddirectPathTest:::");
         OptimizedRoute.insertGateInfo("A", "B", 5);
@@ -180,6 +205,23 @@ public class OptimizedRouteTest {
     } 
 
     @Test
+    public void finddirectPathRevDirectlyTest(){
+        System.out.println("finddirectPathRevDirectlyTest:::");
+        OptimizedRoute.insertGateInfo("A", "B", 5);
+        OptimizedRoute.insertFlightDeparture("U01", "A", "MIA", "08:00");
+        OptimizedRoute.insertBagList("0001", "B", "U01");
+        Gate from = OptimizedRoute.getGateMap().get("B");
+        Gate to = OptimizedRoute.getGateMap().get("A");
+        OptimizedRoute.findShortPath(from);
+        String path = OptimizedRoute.printPath(to);
+        Assert.assertEquals("Wrong path", "B A", path);
+        System.out.println("Test Passed. Computed path is as expected"); 
+
+        Assert.assertEquals("Wrong cost", "5.0", ((Double)to.minTravel).toString());
+        System.out.println("Test Passed. Computed cost is as expected");  
+    } 
+
+    @Test
     public void finddirectRevPathTest(){
         System.out.println("finddirectRevPathTest:::");
         OptimizedRoute.insertGateInfo("A", "B", 5);
@@ -188,6 +230,24 @@ public class OptimizedRouteTest {
         HashMap pathMap = OptimizedRoute.computePaths();
         Assert.assertEquals("Wrong path", "B A : 5.0", pathMap.get("BA"));
         System.out.println("Test Passed. Computed path is as expected");        
+    } 
+
+    @Test
+    public void noPathDirectlyTest(){
+        System.out.println("noPathDirectlyTest:::");
+        OptimizedRoute.insertGateInfo("A", "B", 5);
+        OptimizedRoute.insertGateInfo("C", "D", 2);
+        OptimizedRoute.insertFlightDeparture("U01", "A", "MIA", "08:00");
+        OptimizedRoute.insertBagList("0001", "C", "U01");
+        Gate from = OptimizedRoute.getGateMap().get("C");
+        Gate to = OptimizedRoute.getGateMap().get("A");
+        OptimizedRoute.findShortPath(from);
+        String path = OptimizedRoute.printPath(to);
+        Assert.assertEquals("Wrong path", "No Path", path);
+        System.out.println("Test Passed. Computed path is as expected"); 
+
+        Assert.assertEquals("Wrong cost", "-1.0", ((Double)to.minTravel).toString());
+        System.out.println("Test Passed. Computed cost is as expected");  
     } 
 
     @Test
@@ -203,6 +263,24 @@ public class OptimizedRouteTest {
     } 
 
     @Test
+    public void simplePathDirectlyTest(){
+        System.out.println("simplePathDirectlyTest:::");
+        OptimizedRoute.insertGateInfo("A", "B", 5);
+        OptimizedRoute.insertGateInfo("B", "D", 2);
+        OptimizedRoute.insertFlightDeparture("U01", "D", "MIA", "08:00");
+        OptimizedRoute.insertBagList("0001", "A", "U01");
+        Gate from = OptimizedRoute.getGateMap().get("A");
+        Gate to = OptimizedRoute.getGateMap().get("D");
+        OptimizedRoute.findShortPath(from);
+        String path = OptimizedRoute.printPath(to);
+        Assert.assertEquals("Wrong path", "A B D", path);
+        System.out.println("Test Passed. Computed path is as expected"); 
+
+        Assert.assertEquals("Wrong cost", "7.0", ((Double)to.minTravel).toString());
+        System.out.println("Test Passed. Computed cost is as expected");        
+    }
+
+    @Test
     public void simplePathTest(){
         System.out.println("simplePathTest:::");
         OptimizedRoute.insertGateInfo("A", "B", 5);
@@ -213,6 +291,24 @@ public class OptimizedRouteTest {
         Assert.assertEquals("Wrong path", "A B D : 7.0", pathMap.get("AD"));
         System.out.println("Test Passed. Computed path is as expected");        
     } 
+
+    @Test
+    public void simplePathRevDirectlyTest(){
+        System.out.println("simplePathRevDirectlyTest:::");
+        OptimizedRoute.insertGateInfo("A", "B", 5);
+        OptimizedRoute.insertGateInfo("B", "D", 2);
+        OptimizedRoute.insertFlightDeparture("U01", "A", "MIA", "08:00");
+        OptimizedRoute.insertBagList("0001", "D", "U01");
+        Gate from = OptimizedRoute.getGateMap().get("D");
+        Gate to = OptimizedRoute.getGateMap().get("A");
+        OptimizedRoute.findShortPath(from);
+        String path = OptimizedRoute.printPath(to);
+        Assert.assertEquals("Wrong path", "D B A", path);
+        System.out.println("Test Passed. Computed path is as expected"); 
+
+        Assert.assertEquals("Wrong cost", "7.0", ((Double)to.minTravel).toString());
+        System.out.println("Test Passed. Computed cost is as expected");        
+    }
 
     @Test
     public void simplePathRevTest(){
